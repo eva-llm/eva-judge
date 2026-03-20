@@ -4,16 +4,29 @@
   "description": "LLM-as-a-judge abstraction layer using ai-sdk and plugins",
   "main": "dst/index.js",
   "types": "dst/index.d.ts",
-  "type": "module",
   "engines": {
     "node": ">=22"
   },
+  "files": [
+    "/dst"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "echo 'No tests yet'"
   },
   "devDependencies": {
+    "@types/mustache": "^4.2.6",
     "@types/node": "^25.5.0",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.58",
+    "@ai-sdk/google": "^3.0.43",
+    "@ai-sdk/mistral": "^3.0.24",
+    "@ai-sdk/openai": "^3.0.41",
+    "ai": "^6.0.116",
+    "dedent": "^1.7.2",
+    "mustache": "^4.2.0",
+    "zod": "^4.3.6"
   }
 }
