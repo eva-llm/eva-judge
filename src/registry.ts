@@ -21,7 +21,13 @@ export const getModel = (providerName: string, modelName: string): LanguageModel
   let model = CONF.modelCache.get(cacheKey);
 
   if (!model) {
-    model = PROVIDERS[providerName](modelName);
+    const provider = PROVIDERS[providerName];
+
+    if (!provider) {
+      throw new Error(`Unknown provider: "${providerName}". Available providers: ${Object.keys(PROVIDERS).join(', ')}`);
+    }
+
+    model = provider(modelName);
 
     CONF.modelCache.set(cacheKey, model);
   }
