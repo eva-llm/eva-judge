@@ -9,6 +9,7 @@ import {
   LLM_RUBRIC_USER_PROMPT,
 } from './prompt';
 import { getModel, getSteps, setSteps } from './registry';
+import CONF from './config';
 
 
 export interface EvalOptions {
@@ -30,17 +31,17 @@ export type GevalStepsResult = z.infer<typeof GevalStepsResultSchema>;
 
 export const GevalEvaluateResultSchema = z.object({
   reason: z.string().describe('Detailed explanation of the score based on the rubric'),
-  score: z.number().min(0).max(10).describe('Numeric representation of quality'),
+  score: z.number().min(0).describe('Numeric representation of quality'),
 });
 export type GevalEvaluateResult = z.infer<typeof GevalEvaluateResultSchema>;
 
-export async function llmRubric(
+export const llmRubric = async (
   output: string,
   rubric: string,
   providerName: string,
   modelName: string,
   options: EvalOptions = {}
-): Promise<RubricResult> {
+): Promise<RubricResult> => {
   const userPrompt = Mustache.render(LLM_RUBRIC_USER_PROMPT, { output, rubric });
 
   const { output: result } = await generateText({
@@ -56,16 +57,16 @@ export async function llmRubric(
   return result;
 }
 
-export async function gEval(
+export const gEval = async (
   prompt: string,
   answer: string,
   criteria: string,
   providerName: string,
   modelName: string,
   options: EvalOptions = {}
-): Promise<GevalEvaluateResult> {
+): Promise<GevalEvaluateResult> => {
   const model = getModel(providerName, modelName);
-  let steps = getSteps(criteria);
+  let steps = await getSteps(criteria);
 
   if (!steps) {
     const stepsPrompt = Mustache.render(GEVAL_STEPS_PROMPT, { criteria });
@@ -89,7 +90,7 @@ export async function gEval(
     steps: steps.join('\n- '),
     input: prompt,
     output: answer,
-    maxScore: 10, // NOTE: Hardcoded to 10 because it's optimal for G-Eval, but can be made configurable in the future if needed
+    maxScore: CONF.gevalMaxScore,
   });
 
   const { output: evalResult } = await generateText({

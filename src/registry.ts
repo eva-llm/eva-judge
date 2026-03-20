@@ -4,7 +4,8 @@ import { openai } from '@ai-sdk/openai';
 import { anthropic } from '@ai-sdk/anthropic';
 import { google } from '@ai-sdk/google';
 import { mistral } from '@ai-sdk/mistral';
-import { LRUCache } from 'lru-cache/raw';
+
+import CONF from './config';
 
 
 const PROVIDERS: Record<string, Function> = {
@@ -14,31 +15,28 @@ const PROVIDERS: Record<string, Function> = {
   mistral,
 };
 
-const modelCache = new LRUCache<string, LanguageModel>({ max: 100 });
-const stepsCache = new LRUCache<string, string[]>({ max: 500 });
-
 export const getModel = (providerName: string, modelName: string): LanguageModel => {
   const cacheKey = `${providerName}:${modelName}`;
 
-  let model = modelCache.get(cacheKey);
+  let model = CONF.modelCache.get(cacheKey);
 
   if (!model) {
     model = PROVIDERS[providerName](modelName);
 
-    modelCache.set(cacheKey, model);
+    CONF.modelCache.set(cacheKey, model);
   }
 
   return model!;
 }
 
-const md5 = (str: string) => {
+const md5 = (str: string): string => {
   return crypto.createHash('md5').update(str).digest('hex');
 }
 
-export const getSteps = (criteria: string) => {
-  return stepsCache.get(md5(criteria));
+export const getSteps = (criteria: string): Promise<string[] | undefined> => {
+  return CONF.stepsCache.get(md5(criteria));
 }
 
-export const setSteps = (criteria: string, steps: string[]) => {
-  stepsCache.set(md5(criteria), steps);
+export const setSteps = (criteria: string, steps: string[]): Promise<void> => {
+  return CONF.stepsCache.set(md5(criteria), steps);
 }
