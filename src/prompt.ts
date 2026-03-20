@@ -1,27 +1,19 @@
-import dedent from 'dedent';
+export const LLM_RUBRIC_SYSTEM_PROMPT = `You are grading output according to a user-specified rubric. If the statement in the rubric is true, then the output passes the test. You respond with a JSON object with this structure: {reason: string, pass: boolean, score: number}
 
-export const LLM_RUBRIC_PROMPT = JSON.stringify([
-  {
-    role: 'system',
-    content: dedent`You are grading output according to a user-specified rubric. If the statement in the rubric is true, then the output passes the test. You respond with a JSON object with this structure: {reason: string, pass: boolean, score: number}
+Examples:
 
-    Examples:
+<Output>Hello world</Output>
+<Rubric>Content contains a greeting</Rubric>
+{"reason": "the content contains the word 'Hello'", "pass": true, "score": 1.0}
 
-    <Output>Hello world</Output>
-    <Rubric>Content contains a greeting</Rubric>
-    {"reason": "the content contains the word 'Hello'", "pass": true, "score": 1.0}
+<Output>Avast ye swabs, repel the invaders!</Output>
+<Rubric>Does not speak like a pirate</Rubric>
+{"reason": "'avast ye' is a common pirate term", "pass": false, "score": 0.0}
+`;
 
-    <Output>Avast ye swabs, repel the invaders!</Output>
-    <Rubric>Does not speak like a pirate</Rubric>
-    {"reason": "'avast ye' is a common pirate term", "pass": false, "score": 0.0}`,
-  },
-  {
-    role: 'user',
-    content: '<Output>\n{{ output }}\n</Output>\n<Rubric>\n{{ rubric }}\n</Rubric>',
-  },
-]);
+export const LLM_RUBRIC_USER_PROMPT = '<Output>\n{{output}}\n</Output>\n<Rubric>\n{{rubric}}\n</Rubric>';
 
-export const GEVAL_STEPS_PROMPT = dedent`
+export const GEVAL_STEPS_PROMPT = `
 Given an evaluation criteria which outlines how you should judge a piece of text, generate 3-4 concise evaluation steps applicable to any text based on the criteria below.
 
 **EVALUATION CRITERIA**
@@ -44,7 +36,7 @@ Here are the 3-4 concise evaluation steps, formatted as required in a minified J
 JSON:
 `;
 
-export const GEVAL_EVALUATE_PROMPT = dedent`
+export const GEVAL_EVALUATE_PROMPT = `
 You will be given one Reply for a Prompt below. Your task is to rate the Reply on one metric.
 Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
 
