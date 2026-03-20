@@ -1,59 +1,55 @@
-/**
- * Evaluates an answer using a rubric prompt with an LLM.
- * @param prompt - The rubric or evaluation prompt.
- * @param answer - The answer to be judged.
- * @returns The evaluation result (to be implemented).
- */
 import { generateText, Output } from 'ai';
 import { openai } from '@ai-sdk/openai';
+import { anthropic } from '@ai-sdk/anthropic';
+import { google } from '@ai-sdk/google';
+import { mistral } from '@ai-sdk/mistral';
 import Mustache from 'mustache';
+import z from 'zod';
+
 import {
   GEVAL_EVALUATE_PROMPT,
   GEVAL_STEPS_PROMPT,
   LLM_RUBRIC_SYSTEM_PROMPT,
   LLM_RUBRIC_USER_PROMPT,
 } from './prompt';
-import z from 'zod';
+
 
 export const PROVIDERS: Record<string, Function> = {
     openai,
+    anthropic,
+    google,
+    mistral,
 };
+
+export interface EvalOptions {
+  temperature?: number;
+  providerOptions?: Record<string, any>;
+}
 
 export const RubricResultSchema = z.object({
   reason: z.string().describe('Detailed explanation of the score based on the rubric'),
   pass: z.boolean().describe('Whether the output satisfies the minimum requirements'),
   score: z.number().min(0).max(1).describe('Numeric representation of quality'),
 });
-
 export type RubricResult = z.infer<typeof RubricResultSchema>;
 
 export const GevalStepsResultSchema = z.object({
   steps: z.array(z.string()).describe('List of concise evaluation steps derived from the criteria'),
 });
-
 export type GevalStepsResult = z.infer<typeof GevalStepsResultSchema>;
 
 export const GevalEvaluateResultSchema = z.object({
   reason: z.string().describe('Detailed explanation of the score based on the rubric'),
-  pass: z.boolean().describe('Whether the output satisfies the minimum requirements'),
   score: z.number().min(0).max(10).describe('Numeric representation of quality'),
 });
-
 export type GevalEvaluateResult = z.infer<typeof GevalEvaluateResultSchema>;
 
-
-/**
- * Evaluates an answer using a rubric prompt with an LLM.
- * @param prompt - The rubric or evaluation prompt (can use Mustache template variables).
- * @param rubric - The rubric to use for evaluation.
- * @returns The evaluation result from the LLM.
- */
 export async function llmRubric(
   output: string,
   rubric: string,
   provider: string,
   model: string,
-  options: Record<string, any>
+  options: EvalOptions = {}
 ): Promise<RubricResult> {
   const userPrompt = Mustache.render(LLM_RUBRIC_USER_PROMPT, { output, rubric });
 
@@ -70,19 +66,13 @@ export async function llmRubric(
   return result;
 }
 
-/**
- * General evaluation function for LLM-based judging.
- * @param prompt - The evaluation prompt.
- * @param answer - The answer to be judged.
- * @returns The evaluation result (to be implemented).
- */
 export async function gEval(
   prompt: string,
   answer: string,
   criteria: string,
   provider: string,
   model: string,
-  options: Record<string, any>
+  options: EvalOptions = {}
 ): Promise<GevalEvaluateResult> {
   const stepsPrompt = Mustache.render(GEVAL_STEPS_PROMPT, { criteria });
 
