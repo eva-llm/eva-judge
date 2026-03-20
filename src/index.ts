@@ -102,5 +102,8 @@ export const gEval = async (
     ...options,
   });
 
-  return evalResult;
+  return {
+    reason: evalResult.reason,
+    score: evalResult.score / CONF.gevalMaxScore,
+  };
 }
