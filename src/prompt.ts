@@ -1,3 +1,6 @@
+/**
+ * System prompt for LLM rubric-based grading. Guides the LLM to grade output according to a rubric and respond with a JSON object.
+ */
 export const LLM_RUBRIC_SYSTEM_PROMPT = `You are grading output according to a user-specified rubric. If the statement in the rubric is true, then the output passes the test. You respond with a JSON object with this structure: {reason: string, pass: boolean, score: number}
 
 Examples:
@@ -11,8 +14,14 @@ Examples:
 {"reason": "'avast ye' is a common pirate term", "pass": false, "score": 0.0}
 `;
 
+/**
+ * User prompt template for rubric-based grading. Used to inject output and rubric into the prompt.
+ */
 export const LLM_RUBRIC_USER_PROMPT = '<Output>\n{{output}}\n</Output>\n<Rubric>\n{{rubric}}\n</Rubric>';
 
+/**
+ * System prompt for generating evaluation steps from criteria. Guides the LLM to output a minified JSON array of steps.
+ */
 export const GEVAL_STEPS_PROMPT = `
 Given an evaluation criteria which outlines how you should judge a piece of text, generate 3-4 concise evaluation steps applicable to any text based on the criteria below and designed to confirm the criteria.
 
@@ -36,6 +45,9 @@ Here are the 3-4 concise evaluation steps, formatted as required in a minified J
 JSON:
 `;
 
+/**
+ * System prompt for evaluating a reply against criteria and steps. Guides the LLM to return a JSON with score and reason.
+ */
 export const GEVAL_EVALUATE_PROMPT = `
 You will be given one Reply for a Prompt below. Your task is to rate the Reply on one metric.
 Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.

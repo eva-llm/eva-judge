@@ -13,11 +13,14 @@
   "scripts": {
     "build": "tsc",
     "prepare": "pnpm run build",
-    "test": "echo 'No tests yet'"
+    "test": "jest"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/mustache": "^4.2.6",
     "@types/node": "^25.5.0",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"
   },
   "dependencies": {
