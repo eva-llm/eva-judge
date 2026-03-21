@@ -12,6 +12,9 @@ import { getModel, getSteps, setSteps } from './registry';
 import CONF from './config';
 
 
+export * from './config';
+export { default } from './config';
+
 export interface EvalOptions {
   temperature?: number;
   providerOptions?: Record<string, any>;

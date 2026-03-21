@@ -2,7 +2,7 @@ import { LRUCache } from 'lru-cache';
 import { type LanguageModel } from 'ai';
 
 
-interface IStepsCache {
+export interface IStepsCache {
     set(key: string, value: string[]): Promise<void>;
     get(key: string): Promise<string[] | undefined>;
 };
