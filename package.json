@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "prepare": "pnpm run build",
     "test": "echo 'No tests yet'"
   },
   "devDependencies": {
