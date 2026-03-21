@@ -89,7 +89,8 @@ MIT
 
 ## Supported Providers
 
-The following LLM providers are supported (via ai-sdk):
+
+The following LLM providers are supported (via [Vercel ai-sdk](https://github.com/vercel/ai)): 
 
 - OpenAI (`openai`)
 - Anthropic (`anthropic`)
@@ -103,6 +104,8 @@ The following LLM providers are supported (via ai-sdk):
 - xAI (`xai`)
 
 Specify the provider name and model name in `llmRubric` or `gEval`.
+
+> **Note:** Each provider integration is based on its respective ai-sdk package. Be sure to follow the provider's documentation for setup and authentication. Most providers require you to export an API key or token as an environment variable (e.g., `export OPENAI_API_KEY=...`).
 
 ## Hooks
 
