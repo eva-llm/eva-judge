@@ -86,3 +86,47 @@ const result = await gEval(
 
 ## License
 MIT
+
+## Supported Providers
+
+The following LLM providers are supported (via ai-sdk):
+
+- OpenAI (`openai`)
+- Anthropic (`anthropic`)
+- Google (`google`)
+- Mistral (`mistral`)
+- Amazon Bedrock (`bedrock`)
+- Azure (`azure`)
+- DeepSeek (`deepseek`)
+- Groq (`groq`)
+- Perplexity (`perplexity`)
+- xAI (`xai`)
+
+Specify the provider name and model name in `llmRubric` or `gEval`.
+
+## Hooks
+
+You can provide hooks to receive notifications about evaluation events (success or error) for logging, monitoring, or custom handling. Hooks can also be used to integrate with observability tools such as OpenTelemetry for tracing and metrics. Set these in the config:
+
+```typescript
+import Config from 'eva-judge';
+
+Config.hooks = {
+  onSuccess: ({ method, params, result, duration }) => {
+    // handle successful evaluation
+  },
+  onError: ({ method, error, duration }) => {
+    // handle evaluation error
+  }
+};
+```
+
+For advanced use, you can implement your own cache storage for evaluation steps (e.g., using Redis or another backend) by providing a custom cache via `setStepsCache()`:
+
+```typescript
+import Config from 'eva-judge';
+
+Config.setStepsCache(RedisCache); // RedisCache must implement IStepsCache
+```
+
+See `src/config.ts` for more details on available hooks and configuration options.
