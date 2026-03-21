@@ -82,7 +82,7 @@ export const gEval = async (
 
     steps = stepsResult.steps;
 
-    setSteps(criteria, stepsResult.steps);
+    setSteps(criteria, stepsResult.steps); // NOTE: cache asynchronously, without awaiting
   }
 
   const evaluationPrompt = Mustache.render(GEVAL_EVALUATE_PROMPT, {
