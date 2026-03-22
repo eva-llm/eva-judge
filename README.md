@@ -1,10 +1,10 @@
 # Project Inspiration & Attribution
 
-This project is inspired by [promptfoo](https://github.com/promptfoo/promptfoo), including author's work on the G-Eval framework there. The LLM-as-a-judge prompts are copied from promptfoo and adapted for project-specific issues.
+This project is inspired by [promptfoo](https://github.com/promptfoo/promptfoo), including author's work on the G-Eval framework there. The LLM-as-a-Judge prompts are copied from promptfoo and adapted for project-specific issues.
 
 # eva-judge
 
-A TypeScript/Node.js package for evaluating and managing test cases, prompts, and registry logic for AI or code evaluation workflows.
+A TypeScript/Node.js package for evaluating and managing test cases, prompts, and registry logic for AI or code evaluation workflows with LLM-Rubric or G-Eval.
 
 ## Features
 - Configuration management for evaluation workflows
@@ -12,26 +12,14 @@ A TypeScript/Node.js package for evaluating and managing test cases, prompts, an
 - Registry for test cases and evaluation items
 - Designed for integration with Jest and other test runners
 
-## Project Structure
-- `src/` — Main source code
-  - `config.ts` — Configuration logic
-  - `prompt.ts` — Prompt utilities
-  - `registry.ts` — Registry management
-  - `index.ts` — Entry point
-- `tests/` — Unit tests for all modules
-
 ## Getting Started
-
-### Prerequisites
-- Node.js (>= 16)
-- pnpm (recommended) or npm/yarn
 
 ### Installation
 
-Clone the repository and install dependencies:
-
 ```bash
-pnpm install
+npm install @eva-llm/eva-judge
+# or
+pnpm add @eva-llm/eva-judge
 ```
 
 ### Running Tests
@@ -45,7 +33,7 @@ pnpm test
 Import and use the modules in your TypeScript/Node.js project:
 
 ```typescript
-import { llmRubric, gEval } from 'eva-judge';
+import { llmRubric, gEval } from '@eva-llm/eva-judge';
 ```
 
 ### llmRubric
@@ -112,7 +100,7 @@ Specify the provider name and model name in `llmRubric` or `gEval`.
 You can provide hooks to receive notifications about evaluation events (success or error) for logging, monitoring, or custom handling. Hooks can also be used to integrate with observability tools such as OpenTelemetry for tracing and metrics. Set these in the config:
 
 ```typescript
-import Config from 'eva-judge';
+import Config from '@eva-llm/eva-judge';
 
 Config.hooks = {
   onSuccess: ({ method, params, result, duration }) => {
@@ -127,7 +115,7 @@ Config.hooks = {
 For advanced use, you can implement your own cache storage for evaluation steps (e.g., using Redis or another backend) by providing a custom cache via `setStepsCache()`:
 
 ```typescript
-import Config from 'eva-judge';
+import Config from '@eva-llm/eva-judge';
 
 Config.setStepsCache(RedisCache); // RedisCache must implement IStepsCache
 ```
