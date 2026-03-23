@@ -1,3 +1,8 @@
+/*!
+ * Portions of this code are based on Promptfoo (MIT License)
+ * Copyright (c) 2025 Promptfoo
+ */
+
 /**
  * System prompt for LLM rubric-based grading. Guides the LLM to grade output according to a rubric and respond with a JSON object.
  */
