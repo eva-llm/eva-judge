@@ -10,11 +10,10 @@ import {
 } from './prompt';
 import { getModel, getSteps, setSteps } from './registry';
 import CONF from './config';
-
+import { type EvalMethod } from './types';
 
 export * from './config';
 export { default } from './config';
-
 
 /**
  * Options for evaluation functions.
@@ -31,7 +30,6 @@ export interface EvalOptions {
   providerOptions?: Record<string, any>;
 }
 
-
 /**
  * Zod schema for rubric result.
  * Describes the structure of the result returned by rubric-based evaluation.
@@ -44,12 +42,10 @@ export const RubricResultSchema = z.object({
   /** Numeric representation of quality (0-1). */
   score: z.number().min(0).max(1).describe('Numeric representation of quality'),
 });
-
 /**
  * Type for rubric result (inferred from RubricResultSchema).
  */
 export type RubricResult = z.infer<typeof RubricResultSchema>;
-
 
 /**
  * Zod schema for evaluation steps result.
@@ -59,7 +55,6 @@ export const GevalStepsResultSchema = z.object({
   /** List of concise evaluation steps derived from the criteria. */
   steps: z.array(z.string()).describe('List of concise evaluation steps derived from the criteria'),
 });
-
 /**
  * Type for evaluation steps result (inferred from GevalStepsResultSchema).
  */
@@ -76,7 +71,6 @@ export const GevalEvaluateResultSchema = z.object({
   /** Numeric representation of quality (normalized score, 0-1). */
   score: z.number().min(0).describe('Numeric representation of quality'),
 });
-
 /**
  * Type for evaluation result (inferred from GevalEvaluateResultSchema).
  */
@@ -133,23 +127,14 @@ export const llmRubric = async (
   }
 }
 
-/**
- * Evaluate a reply against criteria and steps using an LLM.
- * If steps for the criteria are not cached, generates them first, then evaluates the answer.
- * @param prompt The prompt given to the model.
- * @param answer The reply to evaluate.
- * @param criteria The evaluation criteria (used to derive steps).
- * @param providerName The provider name for the LLM.
- * @param modelName The model name for the LLM.
- * @param options Optional evaluation options (temperature, providerOptions, etc).
- * @returns The evaluation result with normalized score (reason, score).
- */
-export const gEval = async (
+const _gEval = async (
   prompt: string,
   answer: string,
   criteria: string,
   providerName: string,
   modelName: string,
+  maxScore: number,
+  methodName: EvalMethod,
   options: EvalOptions = {}
 ): Promise<GevalEvaluateResult> => {
   const start = Date.now();
@@ -180,7 +165,7 @@ export const gEval = async (
       steps: steps.join('\n- '),
       input: prompt,
       output: answer,
-      maxScore: CONF.gevalMaxScore,
+      maxScore,
     });
 
     const { output: evalResult } = await generateText({
@@ -194,11 +179,11 @@ export const gEval = async (
 
     const result = {
       reason: evalResult.reason,
-      score: evalResult.score / CONF.gevalMaxScore,
+      score: evalResult.score / maxScore,
     };
 
     CONF.hooks.onSuccess?.({
-      method: 'gEval',
+      method: methodName,
       params: { prompt, answer, criteria, providerName, modelName, options },
       result,
       duration: Date.now() - start,
@@ -208,7 +193,7 @@ export const gEval = async (
   } catch (error) {
 
     CONF.hooks.onError?.({
-      method: 'gEval',
+      method: methodName,
       error,
       duration: Date.now() - start,
     });
@@ -216,3 +201,61 @@ export const gEval = async (
     throw error;
   }
 }
+
+/**
+ * Evaluate a reply against criteria and steps using an LLM-as-a-Judge G-Eval with gradient scoring 0.0-1.0.
+ * If steps for the criteria are not cached, generates them first, then evaluates the answer.
+ * @param prompt The prompt given to the model.
+ * @param answer The reply to evaluate.
+ * @param criteria The evaluation criteria (used to derive steps).
+ * @param providerName The provider name for the LLM.
+ * @param modelName The model name for the LLM.
+ * @param options Optional evaluation options (temperature, providerOptions, etc).
+ * @returns The evaluation result with normalized score (reason, score).
+ */
+export const gEval = async (
+  prompt: string,
+  answer: string,
+  criteria: string,
+  providerName: string,
+  modelName: string,
+  options: EvalOptions = {}
+): Promise<GevalEvaluateResult> => _gEval(
+  prompt,
+  answer,
+  criteria,
+  providerName,
+  modelName,
+  CONF.gevalMaxScore,
+  'gEval',
+  options,
+);
+
+/**
+ * Evaluate a reply against criteria and steps using an LLM-as-a-Judge G-Eval with binary scoring 0|1.
+ * If steps for the criteria are not cached, generates them first, then evaluates the answer.
+ * @param prompt The prompt given to the model.
+ * @param answer The reply to evaluate.
+ * @param criteria The evaluation criteria (used to derive steps).
+ * @param providerName The provider name for the LLM.
+ * @param modelName The model name for the LLM.
+ * @param options Optional evaluation options (temperature, providerOptions, etc).
+ * @returns The evaluation result with normalized score (reason, score).
+ */
+export const bEval = async (
+  prompt: string,
+  answer: string,
+  criteria: string,
+  providerName: string,
+  modelName: string,
+  options: EvalOptions = {}
+): Promise<GevalEvaluateResult> => _gEval(
+  prompt,
+  answer,
+  criteria,
+  providerName,
+  modelName,
+  1,
+  'bEval',
+  options,
+);
