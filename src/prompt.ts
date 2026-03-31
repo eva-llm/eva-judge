@@ -6,7 +6,7 @@
 /**
  * System prompt for LLM rubric-based grading. Guides the LLM to grade output according to a rubric and respond with a JSON object.
  */
-export const LLM_RUBRIC_SYSTEM_PROMPT = `You are grading output according to a user-specified rubric. If the statement in the rubric is true, then the output passes the test. You respond with a JSON object with this structure: {reason: string, pass: boolean, score: number}
+export const LLM_RUBRIC_SYSTEM_PROMPT = `You are grading output according to a user-specified rubric. If the statement in the rubric is true, then the output passes the test. And score 1.0 indicates full compliance with the rubric, but 0.0 indicates no compliance at all. You respond with a JSON object with this structure: {reason: string, pass: boolean, score: number}
 
 Examples:
 
