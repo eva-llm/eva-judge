@@ -33,7 +33,7 @@ pnpm test
 Import and use the modules in your TypeScript/Node.js project:
 
 ```typescript
-import { llmRubric, gEval } from '@eva-llm/eva-judge';
+import { llmRubric, gEval, bEval } from '@eva-llm/eva-judge';
 ```
 
 ### llmRubric
@@ -51,9 +51,10 @@ const result = await llmRubric(
 // result: { reason: string, pass: boolean, score: number }
 ```
 
+
 ### gEval
 
-Evaluates a reply against criteria and derived steps using an LLM. Returns a reason and normalized score.
+Evaluates a reply against criteria and derived steps using an LLM. Returns a reason and normalized score (0.0–1.0).
 
 ```typescript
 const result = await gEval(
@@ -65,6 +66,22 @@ const result = await gEval(
   options      // optional: { temperature, providerOptions }
 );
 // result: { reason: string, score: number }
+```
+
+### bEval (Binary G-Eval)
+
+Evaluates a reply against criteria and derived steps using an LLM, but with binary scoring (0 or 1). Returns a reason and a normalized score (0 or 1).
+
+```typescript
+const result = await bEval(
+  prompt,      // string: the prompt given to the model
+  answer,      // string: the reply to evaluate
+  criteria,    // string: evaluation criteria
+  provider,    // string: LLM provider name
+  model,       // string: LLM model name
+  options      // optional: { temperature, providerOptions }
+);
+// result: { reason: string, score: number } // score will be 0 or 1
 ```
 
 ## Development

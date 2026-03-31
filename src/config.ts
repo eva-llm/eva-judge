@@ -1,7 +1,7 @@
 import { LRUCache } from 'lru-cache';
 import { type LanguageModel } from 'ai';
 
-
+import { type EvalMethod } from './types';
 
 /**
  * Interface for a cache that stores evaluation steps.
@@ -23,7 +23,6 @@ export interface IStepsCache {
    */
   get(key: string): Promise<string[] | undefined>;
 }
-
 
 /**
  * In-memory implementation of IStepsCache using an LRU (Least Recently Used) cache.
@@ -57,7 +56,6 @@ class StepsMemoryAdapter implements IStepsCache {
   }
 }
 
-
 /**
  * Optional hooks for receiving notifications about evaluation events.
  * Can be used to monitor or log success and error events for evaluation functions.
@@ -68,7 +66,7 @@ export interface EvaHooks {
    * @param data Information about the evaluation, including method, params, result, and duration (ms).
    */
   onSuccess?: (data: {
-    method: 'gEval' | 'llmRubric';
+    method: EvalMethod;
     params: any;
     result: any;
     duration: number;
@@ -78,12 +76,11 @@ export interface EvaHooks {
    * @param data Information about the error, including method, error object, and duration (ms).
    */
   onError?: (data: {
-    method: 'gEval' | 'llmRubric';
+    method: EvalMethod;
     error: any;
     duration: number;
   }) => void;
 }
-
 
 /**
  * Global configuration and cache management for evaluation operations.
@@ -111,7 +108,6 @@ export default {
    * Cache for evaluation steps (criteria → steps).
    */
   stepsCache: new StepsMemoryAdapter(500) as IStepsCache,
-
   /**
    * Restart the model cache with a new maximum size.
    * @param size The new cache size (default: 100).
@@ -119,7 +115,6 @@ export default {
   restartModelCache(size: number = 100) {
     this.modelCache = new LRUCache<string, LanguageModel>({ max: size });
   },
-
   /**
    * Restart the steps cache with a new maximum size.
    * @param size The new cache size (default: 500).
@@ -127,7 +122,6 @@ export default {
   restartStepsCache(size: number = 500) {
     this.stepsCache = new StepsMemoryAdapter(size) as IStepsCache;
   },
-
   /**
    * Set a custom steps cache implementation.
    * @param cache The new IStepsCache implementation to use.
@@ -135,40 +129,34 @@ export default {
   setStepsCache(cache: IStepsCache) {
     this.stepsCache = cache;
   },
-
   /**
    * Enable model caching (LLM instances).
    */
   enableModelCache() {
     this.isModelCached = true;
   },
-
   /**
    * Disable model caching (LLM instances).
    */
   disableModelCache() {
     this.isModelCached = false;
   },
-
   /**
    * Enable steps caching (criteria → steps).
    */
   enableStepsCache() {
     this.isStepsCached = true;
   },
-
   /**
    * Disable steps caching (criteria → steps).
    */
   disableStepsCache() {
     this.isStepsCached = false;
   },
-
   /**
    * Hooks for evaluation events (success/error notifications).
    */
   hooks: {} as EvaHooks,
-
   /**
    * Set the hooks for evaluation events.
    * @param hooks The hooks object implementing EvaHooks.
