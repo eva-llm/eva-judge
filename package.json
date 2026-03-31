@@ -1,6 +1,6 @@
 {
   "name": "@eva-llm/eva-judge",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "LLM-as-a-Judge abstraction layer using ai-sdk and plugins",
   "main": "dst/index.js",
   "types": "dst/index.d.ts",
