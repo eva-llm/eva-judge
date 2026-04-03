@@ -1,5 +1,3 @@
-# eva-judge
-
 A TypeScript/Node.js library for automated text evaluation with AI analysis through **LLM-Rubric**, **G-Eval**, or **B-Eval** (Binary G-Eval).
 
 ## Project Inspiration & Attribution

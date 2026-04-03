@@ -1,28 +1,7 @@
 import { LRUCache } from 'lru-cache';
 import { type LanguageModel } from 'ai';
 
-import { type EvalMethod } from './types';
-
-/**
- * Interface for a cache that stores evaluation steps.
- * Implementations should provide asynchronous set/get methods for storing and retrieving
- * arrays of strings, typically representing evaluation steps for a given key.
- */
-export interface IStepsCache {
-  /**
-   * Store an array of steps in the cache for a given key.
-   * @param key Unique identifier for the steps (e.g., criteria string).
-   * @param value Array of step strings to cache.
-   * @returns Promise that resolves when the value is set.
-   */
-  set(key: string, value: string[]): Promise<void>;
-  /**
-   * Retrieve an array of steps from the cache for a given key.
-   * @param key Unique identifier for the steps (e.g., criteria string).
-   * @returns Promise resolving to the cached array of steps, or undefined if not found.
-   */
-  get(key: string): Promise<string[] | undefined>;
-}
+import { type EvalMethod, type IStepsCache } from './types';
 
 /**
  * In-memory implementation of IStepsCache using an LRU (Least Recently Used) cache.

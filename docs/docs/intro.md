@@ -1,35 +1,45 @@
+---
+sidebar_position: 1
+---
+
+# Project Inspiration & Attribution
+
+This project is inspired by [promptfoo](https://github.com/promptfoo/promptfoo), including author's work on the G-Eval framework there. The LLM-as-a-Judge prompts are copied from promptfoo and adapted for project-specific issues.
+
 # eva-judge
 
-A TypeScript/Node.js library for automated text evaluation with AI analysis through **LLM-Rubric**, **G-Eval**, or **B-Eval** (Binary G-Eval).
+A TypeScript/Node.js package for evaluating and managing test cases, prompts, and registry logic for AI or code evaluation workflows with LLM-Rubric or G-Eval.
 
-## Project Inspiration & Attribution
+## Features
+- Configuration management for evaluation workflows
+- Prompt handling and manipulation
+- Registry for test cases and evaluation items
+- Designed for integration with Jest and other test runners
 
-This project is inspired by [promptfoo](https://github.com/promptfoo/promptfoo), including [author's work](https://github.com/promptfoo/promptfoo/issues?q=state%3Aclosed%20is%3Apr%20author%3A%40schipiga) on the [G-Eval](https://www.promptfoo.dev/docs/configuration/expected-outputs/model-graded/g-eval/) framework there.<br />
-The LLM-as-a-Judge prompts are copied from promptfoo and adapted for project-specific issues.
+## Getting Started
 
-## Quick Start
+### Installation
 
 ```bash
 npm install @eva-llm/eva-judge
+# or
+pnpm add @eva-llm/eva-judge
 ```
 
-```ts
-import { llmRubric, gEval, bEval } from '@eva-llm/eva-judge'
+### Running Tests
 
-const prompt = 'Hello! How are you?';
-const answer = 'Hi! I am fine. And you?';
-
-await llmRubric(answer, 'answer is polite', 'openai', 'gpt-4.1-mini');
-// { pass: true, score: 1, reason: "The answer is definitely polite and sympathetic" }
-
-await gEval(prompt, answer, 'answer is relevant to question', 'openai', 'gpt-4.1-mini');
-// { score: 0.9, reason: 'The answer is quite well relevant to the question' }
-
-await bEval(prompt, answer, 'answer is coherent to question', 'openai', 'gpt-4.1-mini');
-// { score: 1, reason: 'The answer is definitely coherent to the question' }
+```bash
+pnpm test
 ```
 
-## API
+## Usage
+
+Import and use the modules in your TypeScript/Node.js project:
+
+```typescript
+import { llmRubric, gEval, bEval } from '@eva-llm/eva-judge';
+```
+
 ### llmRubric
 
 Evaluates an output against a rubric using an LLM. Returns a reason, pass/fail, and normalized score.
@@ -48,7 +58,7 @@ const result = await llmRubric(
 
 ### gEval
 
-Evaluates a reply against criteria and derived steps using an LLM. Returns a reason and normalized score (0.0-1.0).
+Evaluates a reply against criteria and derived steps using an LLM. Returns a reason and normalized score (0.0–1.0).
 
 ```typescript
 const result = await gEval(
@@ -78,7 +88,16 @@ const result = await bEval(
 // result: { reason: string, score: number } // score will be 0 or 1
 ```
 
+## Development
+- Source code is in `src/`
+- Tests are in `tests/`
+- Uses TypeScript and Jest for testing
+
+## License
+MIT
+
 ## Supported Providers
+
 
 The following LLM providers are supported (via [Vercel ai-sdk](https://github.com/vercel/ai)): 
 
@@ -93,12 +112,11 @@ The following LLM providers are supported (via [Vercel ai-sdk](https://github.co
 - Perplexity (`perplexity`)
 - xAI (`xai`)
 
-Specify the provider name and model name in `llmRubric`, `gEval`, or `bEval`.
+Specify the provider name and model name in `llmRubric` or `gEval`.
 
 > **Note:** Each provider integration is based on its respective ai-sdk package. Be sure to follow the provider's documentation for setup and authentication. Most providers require you to export an API key or token as an environment variable (e.g., `export OPENAI_API_KEY=...`).
 
-## Enterprise
-### Hooks
+## Hooks
 
 You can provide hooks to receive notifications about evaluation events (success or error) for logging, monitoring, or custom handling. Hooks can also be used to integrate with observability tools such as OpenTelemetry for tracing and metrics. Set these in the config:
 
@@ -115,20 +133,12 @@ Config.hooks = {
 };
 ```
 
-### G-Eval/B-Eval Evaluation Steps Persistent Storage
-
 For advanced use, you can implement your own cache storage for evaluation steps (e.g., using Redis or another backend) by providing a custom cache via `setStepsCache()`:
 
 ```typescript
-import Config, { type IStepsCache } from '@eva-llm/eva-judge';
+import Config from '@eva-llm/eva-judge';
 
-class RedisCache implements IStepsCache {
-...
-};
-
-Config.setStepsCache(RedisCache);
+Config.setStepsCache(RedisCache); // RedisCache must implement IStepsCache
 ```
 
-## License
-
-MIT
+See `src/config.ts` for more details on available hooks and configuration options.
