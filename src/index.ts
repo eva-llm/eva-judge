@@ -10,25 +10,11 @@ import {
 } from './prompt';
 import { getModel, getSteps, setSteps } from './registry';
 import CONF from './config';
-import { type EvalMethod } from './types';
+import { type EvalOptions, type EvalMethod } from './types';
 
 export * from './config';
 export { default } from './config';
-
-/**
- * Options for evaluation functions.
- * Allows customization of LLM generation parameters and provider-specific options.
- */
-export interface EvalOptions {
-  /**
-   * Temperature for model generation (controls randomness).
-   */
-  temperature?: number;
-  /**
-   * Additional provider-specific options (passed to the LLM provider).
-   */
-  providerOptions?: Record<string, any>;
-}
+export * from './types';
 
 /**
  * Zod schema for rubric result.
