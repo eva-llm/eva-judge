@@ -12,7 +12,7 @@ npm install @eva-llm/eva-judge
 ```
 
 ```ts
-import { llmRubric, gEval, bEval } from '@eva-llm/eva-judge'
+import { llmRubric, gEval, bEval } from '@eva-llm/eva-judge';
 
 const prompt = 'Hello! How are you?';
 const answer = 'Hi! I am fine. And you?';
@@ -42,7 +42,6 @@ const result = await llmRubric(
 );
 // result: { reason: string, pass: boolean, score: number }
 ```
-
 
 ### gEval
 
@@ -96,7 +95,7 @@ Specify the provider name and model name in `llmRubric`, `gEval`, or `bEval`.
 > **Note:** Each provider integration is based on its respective ai-sdk package. Be sure to follow the provider's documentation for setup and authentication. Most providers require you to export an API key or token as an environment variable (e.g., `export OPENAI_API_KEY=...`).
 
 ## Enterprise
-### Hooks
+### LLM Judge Hooks
 
 You can provide hooks to receive notifications about evaluation events (success or error) for logging, monitoring, or custom handling. Hooks can also be used to integrate with observability tools such as OpenTelemetry for tracing and metrics. Set these in the config:
 
@@ -111,6 +110,19 @@ Config.hooks = {
     // handle evaluation error
   }
 };
+```
+
+### Configuring
+
+```ts
+import Config from '@eva-llm/eva-judge';
+
+Config.restartModelCache(500); // cache 500 (default 100) models by provider:model with LRU Cache
+Config.restartStepsCache(1000); // cache 1000 (default 500) Evaluations Steps by criteria with LRU Cache
+Config.enableModelCache();
+Config.disableModelCache();
+Config.enableStepsCache();
+Config.disableStepsCache();
 ```
 
 ### G-Eval/B-Eval Evaluation Steps Persistent Storage

@@ -35,3 +35,29 @@ export interface EvalOptions {
    */
   providerOptions?: Record<string, any>;
 }
+
+/**
+ * Optional hooks for receiving notifications about evaluation events.
+ * Can be used to monitor or log success and error events for evaluation functions.
+ */
+export interface EvaHooks {
+  /**
+   * Called when an evaluation completes successfully.
+   * @param data Information about the evaluation, including method, params, result, and duration (ms).
+   */
+  onSuccess?: (data: {
+    method: EvalMethod;
+    params: any;
+    result: any;
+    duration: number;
+  }) => void;
+  /**
+   * Called when an evaluation throws an error.
+   * @param data Information about the error, including method, error object, and duration (ms).
+   */
+  onError?: (data: {
+    method: EvalMethod;
+    error: any;
+    duration: number;
+  }) => void;
+}
