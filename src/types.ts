@@ -1,4 +1,5 @@
 export type EvalMethod = 'bEval' | 'gEval' | 'llmRubric';
+export type GEvalInput = string | { query: string; answer: string };
 
 /**
  * Interface for a cache that stores evaluation steps.

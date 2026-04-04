@@ -1,6 +1,6 @@
 {
   "name": "@eva-llm/eva-judge",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "LLM-as-a-Judge abstraction layer using ai-sdk and plugins",
   "main": "dst/index.js",
   "types": "dst/index.d.ts",
@@ -13,6 +13,7 @@
   "scripts": {
     "build": "tsc",
     "prepare": "pnpm run build",
+    "example": "ts-node scripts/example.ts",
     "test": "jest"
   },
   "repository": {
@@ -31,6 +32,7 @@
     "@types/node": "^25.5.0",
     "jest": "^30.3.0",
     "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {

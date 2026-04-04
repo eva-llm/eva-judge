@@ -4,13 +4,18 @@ import z from 'zod';
 
 import {
   GEVAL_EVALUATE_PROMPT,
+  GEVAL_EVALUATE_REPLY_PROMPT,
   GEVAL_STEPS_PROMPT,
   LLM_RUBRIC_SYSTEM_PROMPT,
   LLM_RUBRIC_USER_PROMPT,
 } from './prompt';
 import { getModel, getSteps, setSteps } from './registry';
 import CONF from './config';
-import { type EvalOptions, type EvalMethod } from './types';
+import {
+  type EvalOptions,
+  type EvalMethod,
+  type GEvalInput,
+} from './types';
 
 export * from './config';
 export { default } from './config';
@@ -114,8 +119,7 @@ export const llmRubric = async (
 }
 
 const _gEval = async (
-  prompt: string,
-  answer: string,
+  input: GEvalInput,
   criteria: string,
   providerName: string,
   modelName: string,
@@ -123,6 +127,11 @@ const _gEval = async (
   methodName: EvalMethod,
   options: EvalOptions = {}
 ): Promise<GevalEvaluateResult> => {
+  if (typeof input === 'string') {
+    input = { query: '', answer: input };
+  }
+  const { query, answer } = input;
+
   const start = Date.now();
 
   try {
@@ -146,13 +155,15 @@ const _gEval = async (
       setSteps(criteria, stepsResult.steps); // NOTE: cache asynchronously, without awaiting
     }
 
-    const evaluationPrompt = Mustache.render(GEVAL_EVALUATE_PROMPT, {
-      criteria,
-      steps: steps.join('\n- '),
-      input: prompt,
-      output: answer,
-      maxScore,
-    });
+    const evaluationPrompt = Mustache.render(
+      query ? GEVAL_EVALUATE_PROMPT : GEVAL_EVALUATE_REPLY_PROMPT,
+      {
+        criteria,
+        steps: steps.join('\n- '),
+        input: query,
+        output: answer,
+        maxScore,
+      });
 
     const { output: evalResult } = await generateText({
       model,
@@ -170,7 +181,7 @@ const _gEval = async (
 
     CONF.hooks.onSuccess?.({
       method: methodName,
-      params: { prompt, answer, criteria, providerName, modelName, options },
+      params: { query, answer, criteria, providerName, modelName, options },
       result,
       duration: Date.now() - start,
     });
@@ -189,10 +200,9 @@ const _gEval = async (
 }
 
 /**
- * Evaluate a reply against criteria and steps using an LLM-as-a-Judge G-Eval with gradient scoring 0.0-1.0.
+ * Evaluate an input against criteria and steps using an LLM-as-a-Judge G-Eval with gradient scoring 0.0-1.0.
  * If steps for the criteria are not cached, generates them first, then evaluates the answer.
- * @param prompt The prompt given to the model.
- * @param answer The reply to evaluate.
+ * @param input The input containing text or query-answer to evaluate.
  * @param criteria The evaluation criteria (used to derive steps).
  * @param providerName The provider name for the LLM.
  * @param modelName The model name for the LLM.
@@ -200,15 +210,13 @@ const _gEval = async (
  * @returns The evaluation result with normalized score (reason, score).
  */
 export const gEval = async (
-  prompt: string,
-  answer: string,
+  input: GEvalInput,
   criteria: string,
   providerName: string,
   modelName: string,
   options: EvalOptions = {}
 ): Promise<GevalEvaluateResult> => _gEval(
-  prompt,
-  answer,
+  input,
   criteria,
   providerName,
   modelName,
@@ -218,10 +226,9 @@ export const gEval = async (
 );
 
 /**
- * Evaluate a reply against criteria and steps using an LLM-as-a-Judge G-Eval with binary scoring 0|1.
+ * Evaluate an input against criteria and steps using an LLM-as-a-Judge G-Eval with binary scoring 0|1.
  * If steps for the criteria are not cached, generates them first, then evaluates the answer.
- * @param prompt The prompt given to the model.
- * @param answer The reply to evaluate.
+ * @param input The input containing text or query-answer to evaluate.
  * @param criteria The evaluation criteria (used to derive steps).
  * @param providerName The provider name for the LLM.
  * @param modelName The model name for the LLM.
@@ -229,15 +236,13 @@ export const gEval = async (
  * @returns The evaluation result with normalized score (reason, score).
  */
 export const bEval = async (
-  prompt: string,
-  answer: string,
+  input: GEvalInput,
   criteria: string,
   providerName: string,
   modelName: string,
   options: EvalOptions = {}
 ): Promise<GevalEvaluateResult> => _gEval(
-  prompt,
-  answer,
+  input,
   criteria,
   providerName,
   modelName,
