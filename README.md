@@ -16,18 +16,26 @@ npm install @eva-llm/eva-judge
 ```ts
 import { llmRubric, gEval, bEval } from '@eva-llm/eva-judge';
 
-const prompt = 'Hello! How are you?';
+const query = 'Hello! How are you?';
 const answer = 'Hi! I am fine. And you?';
 
 await llmRubric(answer, 'answer is polite', 'openai', 'gpt-4.1-mini');
 // { pass: true, score: 1, reason: "The answer is definitely polite and sympathetic" }
 
-await gEval(prompt, answer, 'answer is relevant to question', 'openai', 'gpt-4.1-mini');
+await gEval(answer, 'answer is polite', 'openai', 'gpt-4.1-mini');
+// { score: 0.8, reason: "The answer is quite polite" }
+
+await bEval(answer, 'answer is polite', 'openai', 'gpt-4.1-mini');
+// { score: 1, reason: "The answer is polite" }
+
+await gEval({ query, answer }, 'answer is relevant to question', 'openai', 'gpt-4.1-mini');
 // { score: 0.9, reason: 'The answer is quite well relevant to the question' }
 
-await bEval(prompt, answer, 'answer is coherent to question', 'openai', 'gpt-4.1-mini');
+await bEval({ query, answer }, 'answer is coherent to question', 'openai', 'gpt-4.1-mini');
 // { score: 1, reason: 'The answer is definitely coherent to the question' }
 ```
+
+**NOTE!** For better judging the factual standard is temperature=0
 
 ## API
 ### llmRubric
@@ -51,8 +59,7 @@ Evaluates a reply against criteria and derived steps using an LLM. Returns a rea
 
 ```typescript
 const result = await gEval(
-  prompt,      // string: the prompt given to the model
-  answer,      // string: the reply to evaluate
+  input: string | { query: string, answer: string }, // evaluated text or query-answer pair
   criteria,    // string: evaluation criteria
   provider,    // string: LLM provider name
   model,       // string: LLM model name
@@ -67,8 +74,7 @@ Evaluates a reply against criteria and derived steps using an LLM, but with bina
 
 ```typescript
 const result = await bEval(
-  prompt,      // string: the prompt given to the model
-  answer,      // string: the reply to evaluate
+  input: string | { query: string, answer: string }, // evaluated text or query-answer pair
   criteria,    // string: evaluation criteria
   provider,    // string: LLM provider name
   model,       // string: LLM model name
