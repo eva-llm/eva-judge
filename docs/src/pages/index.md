@@ -81,6 +81,20 @@ const result = await bEval(
 // result: { reason: string, score: number } // score will be 0 or 1
 ```
 
+---
+
+### G-Eval vs B-Eval
+The divergence between **G-Eval** and **B-Eval** reveals a critical **'Judgement Gap'**:
+
+* **G-Eval (The Auditor):** Scoring on a `0.0-1.0` scale allows the model to stay in a 'comfort zone', smoothing over internal contradictions.
+* **B-Eval (The Judge):** A binary `0|1` choice forces **Adjudication**. This 'forced choice' triggers the **Alignment Paradox**, exposing the struggle between **RLHF training** and objective facts.
+
+**Conclusion:** **B-Eval** is a superior stress-test for **Epistemic Honesty**. By stripping away the safety net of grey-zone scoring, it reveals exactly where logic breaks under the weight of normative priors.
+
+More details in EVA-LLM [Dark Teaming Manifesto](https://eva-llm.github.io/dark-teaming).
+
+---
+
 ## Supported Providers
 
 The following LLM providers are supported (via [Vercel ai-sdk](https://github.com/vercel/ai)): 
