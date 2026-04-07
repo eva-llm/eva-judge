@@ -2,7 +2,7 @@ A TypeScript/Node.js library for automated text evaluation with AI analysis thro
 
 ## Project Inspiration & Attribution
 
-This project is inspired by [promptfoo](https://github.com/promptfoo/promptfoo), including [author's work](https://github.com/promptfoo/promptfoo/issues?q=state%3Aclosed%20is%3Apr%20author%3A%40schipiga) on the [G-Eval](https://www.promptfoo.dev/docs/configuration/expected-outputs/model-graded/g-eval/) framework there.<br />
+This project is inspired by [promptfoo](https://github.com/promptfoo/promptfoo), including [author's work](https://github.com/promptfoo/promptfoo/issues?q=state%3Amerged%20is%3Apr%20author%3A%40schipiga) on the [G-Eval](https://www.promptfoo.dev/docs/configuration/expected-outputs/model-graded/g-eval/) framework there.<br />
 The LLM-as-a-Judge prompts are copied from promptfoo and adapted for project-specific issues.
 
 ## Quick Start
