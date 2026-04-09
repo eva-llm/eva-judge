@@ -6,7 +6,10 @@
 /**
  * System prompt for LLM rubric-based grading. Guides the LLM to grade output according to a rubric and respond with a JSON object.
  */
-export const LLM_RUBRIC_SYSTEM_PROMPT = `You are grading output according to a user-specified rubric. If the statement in the rubric is true, then the output passes the test. And score 1.0 indicates full compliance with the rubric, but 0.0 indicates no compliance at all. You respond with a JSON object with this structure: {reason: string, pass: boolean, score: number}
+export const LLM_RUBRIC_SYSTEM_PROMPT = `
+Instruction #{{hash_id}}.
+
+You are grading output according to a user-specified rubric. If the statement in the rubric is true, then the output passes the test. And score 1.0 indicates full compliance with the rubric, but 0.0 indicates no compliance at all. You respond with a JSON object with this structure: {reason: string, pass: boolean, score: number}
 
 Examples:
 
@@ -56,6 +59,8 @@ JSON:
  * System prompt for evaluating a reply against criteria and steps. Guides the LLM to return a JSON with score and reason.
  */
 export const GEVAL_EVALUATE_REPLY_PROMPT = `
+Instruction #{{hash_id}}.
+
 You will be given one Reply below. Your task is to rate the Reply on one metric.
 Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
 
@@ -93,6 +98,8 @@ JSON:
  * System prompt for evaluating a reply with prompt against criteria and steps. Guides the LLM to return a JSON with score and reason.
  */
 export const GEVAL_EVALUATE_PROMPT = `
+Instruction #{{hash_id}}.
+
 You will be given one Reply for a Prompt below. Your task is to rate the Reply on one metric.
 Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
 

@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { generateText, Output } from 'ai';
 import * as Mustache from 'mustache';
 import z from 'zod';
@@ -67,6 +68,8 @@ export const GevalEvaluateResultSchema = z.object({
  */
 export type GevalEvaluateResult = z.infer<typeof GevalEvaluateResultSchema>;
 
+const getHashId = () => crypto.randomBytes(16).toString('hex'); // NOTE: 16 bytes = 128 bits of entropy, should be sufficient for uniqueness in prompts
+
 /**
  * Evaluate output against a rubric using an LLM.
  * Uses a system and user prompt to instruct the LLM to grade the output according to the rubric.
@@ -90,7 +93,7 @@ export const llmRubric = async (
 
     const { output: result } = await generateText({
       model: getModel(providerName, modelName),
-      system: LLM_RUBRIC_SYSTEM_PROMPT,
+      system: Mustache.render(LLM_RUBRIC_SYSTEM_PROMPT, { hash_id: getHashId() }),
       prompt: userPrompt,
       output: Output.object({
         schema: RubricResultSchema,
@@ -158,6 +161,7 @@ const _gEval = async (
     const evaluationPrompt = Mustache.render(
       query ? GEVAL_EVALUATE_PROMPT : GEVAL_EVALUATE_REPLY_PROMPT,
       {
+        hash_id: getHashId(),
         criteria,
         steps: steps.join('\n- '),
         input: query,
