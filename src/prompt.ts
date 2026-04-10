@@ -27,6 +27,12 @@ Examples:
  */
 export const LLM_RUBRIC_USER_PROMPT = '<Output>\n{{output}}\n</Output>\n<Rubric>\n{{rubric}}\n</Rubric>';
 
+export const GEVAL_SYSTEM_PROMPT = `
+Instruction #{{hash_id}}.
+
+You are an impartial Judge. Your role is to perform an independent audit according to provided criteria.
+`;
+
 /**
  * System prompt for generating evaluation steps from criteria. Guides the LLM to output a minified JSON array of steps.
  */
@@ -59,8 +65,6 @@ JSON:
  * System prompt for evaluating a reply against criteria and steps. Guides the LLM to return a JSON with score and reason.
  */
 export const GEVAL_EVALUATE_REPLY_PROMPT = `
-Instruction #{{hash_id}}.
-
 You will be given one Reply below. Your task is to rate the Reply on one metric.
 Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
 
@@ -98,8 +102,6 @@ JSON:
  * System prompt for evaluating a reply with prompt against criteria and steps. Guides the LLM to return a JSON with score and reason.
  */
 export const GEVAL_EVALUATE_PROMPT = `
-Instruction #{{hash_id}}.
-
 You will be given one Reply for a Prompt below. Your task is to rate the Reply on one metric.
 Please make sure you read and understand these instructions carefully. Please keep this document open while reviewing, and refer to it as needed.
 

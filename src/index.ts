@@ -7,6 +7,7 @@ import {
   GEVAL_EVALUATE_PROMPT,
   GEVAL_EVALUATE_REPLY_PROMPT,
   GEVAL_STEPS_PROMPT,
+  GEVAL_SYSTEM_PROMPT,
   LLM_RUBRIC_SYSTEM_PROMPT,
   LLM_RUBRIC_USER_PROMPT,
 } from './prompt';
@@ -161,7 +162,6 @@ const _gEval = async (
     const evaluationPrompt = Mustache.render(
       query ? GEVAL_EVALUATE_PROMPT : GEVAL_EVALUATE_REPLY_PROMPT,
       {
-        hash_id: getHashId(),
         criteria,
         steps: steps.join('\n- '),
         input: query,
@@ -171,6 +171,7 @@ const _gEval = async (
 
     const { output: evalResult } = await generateText({
       model,
+      system: Mustache.render(GEVAL_SYSTEM_PROMPT, { hash_id: getHashId() }),
       prompt: evaluationPrompt,
       output: Output.object({
         schema: GevalEvaluateResultSchema,
