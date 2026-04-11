@@ -2,10 +2,14 @@
 
 A TypeScript/Node.js library for automated text evaluation with AI analysis through **LLM-Rubric**, **G-Eval**, or **B-Eval** (Binary G-Eval).
 
+---
+
 ## Project Inspiration & Attribution
 
 This project is inspired by [promptfoo](https://github.com/promptfoo/promptfoo), including [author's work](https://github.com/promptfoo/promptfoo/issues?q=state%3Amerged%20is%3Apr%20author%3A%40schipiga) on the [G-Eval](https://www.promptfoo.dev/docs/configuration/expected-outputs/model-graded/g-eval/) framework there.<br />
 The LLM-as-a-Judge prompts are copied from promptfoo and adapted for project-specific issues.
+
+---
 
 ## Quick Start
 
@@ -35,7 +39,9 @@ await bEval({ query, answer }, 'answer is coherent to question', 'openai', 'gpt-
 // { score: 1, reason: 'The answer is definitely coherent to the question' }
 ```
 
-**NOTE!** For better judging the factual standard is temperature=0
+**NOTE!** For robust judging the factual standard is `temperature=0`
+
+---
 
 ## API
 ### llmRubric
@@ -85,15 +91,15 @@ const result = await bEval(
 
 ---
 
-### G-Eval vs B-Eval
+## G-Eval vs B-Eval
 The divergence between **G-Eval** and **B-Eval** reveals a critical **'Judgement Gap'**:
 
-* **G-Eval (The Auditor):** Scoring on a `0.0-1.0` scale allows the model to stay in a 'comfort zone', smoothing over internal contradictions.
-* **B-Eval (The Judge):** A binary `0|1` choice forces **Adjudication**. This 'forced choice' triggers the **Alignment Paradox**, exposing the struggle between **RLHF training** and objective facts.
+- **G-Eval (The Auditor):** Scoring on a `0.0-1.0` scale allows the model to stay in a 'comfort zone', smoothing over internal contradictions.
+- **B-Eval (The Judge):** A binary `0|1` choice forces **Adjudication**. This 'forced choice' triggers the **Alignment Paradox**, exposing the struggle between **RLHF training** and objective facts.
 
-**Conclusion:** **B-Eval** is a superior stress-test for **Epistemic Honesty**. By stripping away the safety net of grey-zone scoring, it reveals exactly where logic breaks under the weight of normative priors.
+**B-Eval** is a superior stress-test for **Epistemic Honesty**. By stripping away the safety net of grey-zone scoring, it reveals exactly where logic breaks under the weight of normative priors.
 
-More details in EVA-LLM [Dark Teaming Manifesto](https://eva-llm.github.io/dark-teaming).
+More details in [Dark Teaming Manifesto](https://eva-llm.github.io/dark-teaming).
 
 ---
 
@@ -115,6 +121,8 @@ The following LLM providers are supported (via [Vercel ai-sdk](https://github.co
 Specify the provider name and model name in `llmRubric`, `gEval`, or `bEval`.
 
 > **Note:** Each provider integration is based on its respective ai-sdk package. Be sure to follow the provider's documentation for setup and authentication. Most providers require you to export an API key or token as an environment variable (e.g., `export OPENAI_API_KEY=...`).
+
+---
 
 ## Enterprise
 ### LLM Judge Hooks
@@ -147,7 +155,7 @@ Config.enableStepsCache();
 Config.disableStepsCache();
 ```
 
-### G-Eval/B-Eval Evaluation Steps Persistent Storage
+### G-Eval / B-Eval Evaluation Steps Persistent Storage
 
 For advanced use, you can implement your own cache storage for evaluation steps (e.g., using Redis or another backend) by providing a custom cache via `setStepsCache()`:
 
@@ -160,7 +168,3 @@ class RedisCache implements IStepsCache {
 
 Config.setStepsCache(RedisCache);
 ```
-
-## License
-
-MIT
