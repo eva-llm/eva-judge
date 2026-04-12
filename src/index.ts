@@ -1,7 +1,6 @@
 import crypto from 'node:crypto';
 import { generateText, Output } from 'ai';
 import * as Mustache from 'mustache';
-import z from 'zod';
 
 import {
   GEVAL_EVALUATE_PROMPT,
@@ -17,57 +16,16 @@ import {
   type EvalOptions,
   type EvalMethod,
   type GEvalInput,
+  type RubricResult,
+  type GevalEvaluateResult,
+  RubricResultSchema,
+  GevalStepsResultSchema,
+  GevalEvaluateResultSchema,
 } from './types';
 
 export * from './config';
 export { default } from './config';
 export * from './types';
-
-/**
- * Zod schema for rubric result.
- * Describes the structure of the result returned by rubric-based evaluation.
- */
-export const RubricResultSchema = z.object({
-  /** Detailed explanation of the score based on the rubric. */
-  reason: z.string().describe('Detailed explanation of the score based on the rubric'),
-  /** Whether the output satisfies the minimum requirements. */
-  pass: z.boolean().describe('Whether the output satisfies the minimum requirements'),
-  /** Numeric representation of quality (0-1). */
-  score: z.number().min(0).max(1).describe('Numeric representation of quality'),
-});
-/**
- * Type for rubric result (inferred from RubricResultSchema).
- */
-export type RubricResult = z.infer<typeof RubricResultSchema>;
-
-/**
- * Zod schema for evaluation steps result.
- * Describes the structure of the result containing evaluation steps derived from criteria.
- */
-export const GevalStepsResultSchema = z.object({
-  /** List of concise evaluation steps derived from the criteria. */
-  steps: z.array(z.string()).describe('List of concise evaluation steps derived from the criteria'),
-});
-/**
- * Type for evaluation steps result (inferred from GevalStepsResultSchema).
- */
-export type GevalStepsResult = z.infer<typeof GevalStepsResultSchema>;
-
-
-/**
- * Zod schema for evaluation result.
- * Describes the structure of the result returned by the main evaluation function.
- */
-export const GevalEvaluateResultSchema = z.object({
-  /** Detailed explanation of the score based on the rubric. */
-  reason: z.string().describe('Detailed explanation of the score based on the rubric'),
-  /** Numeric representation of quality (normalized score, 0-1). */
-  score: z.number().min(0).describe('Numeric representation of quality'),
-});
-/**
- * Type for evaluation result (inferred from GevalEvaluateResultSchema).
- */
-export type GevalEvaluateResult = z.infer<typeof GevalEvaluateResultSchema>;
 
 const getHashId = () => crypto.randomBytes(16).toString('hex'); // NOTE: 16 bytes = 128 bits of entropy, should be sufficient for uniqueness in prompts
 

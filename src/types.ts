@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 export type EvalMethod = 'bEval' | 'gEval' | 'llmRubric';
 export type GEvalInput = string | { query: string; answer: string };
 
@@ -62,3 +64,48 @@ export interface EvaHooks {
     duration: number;
   }) => void;
 }
+
+/**
+ * Zod schema for rubric result.
+ * Describes the structure of the result returned by rubric-based evaluation.
+ */
+export const RubricResultSchema = z.object({
+  /** Detailed explanation of the score based on the rubric. */
+  reason: z.string().describe('Detailed explanation of the score based on the rubric'),
+  /** Whether the output satisfies the minimum requirements. */
+  pass: z.boolean().describe('Whether the output satisfies the minimum requirements'),
+  /** Numeric representation of quality (0-1). */
+  score: z.number().min(0).max(1).describe('Numeric representation of quality'),
+});
+/**
+ * Type for rubric result (inferred from RubricResultSchema).
+ */
+export type RubricResult = z.infer<typeof RubricResultSchema>;
+
+/**
+ * Zod schema for evaluation steps result.
+ * Describes the structure of the result containing evaluation steps derived from criteria.
+ */
+export const GevalStepsResultSchema = z.object({
+  /** List of concise evaluation steps derived from the criteria. */
+  steps: z.array(z.string()).describe('List of concise evaluation steps derived from the criteria'),
+});
+/**
+ * Type for evaluation steps result (inferred from GevalStepsResultSchema).
+ */
+export type GevalStepsResult = z.infer<typeof GevalStepsResultSchema>;
+
+/**
+ * Zod schema for evaluation result.
+ * Describes the structure of the result returned by the main evaluation function.
+ */
+export const GevalEvaluateResultSchema = z.object({
+  /** Detailed explanation of the score based on the rubric. */
+  reason: z.string().describe('Detailed explanation of the score based on the rubric'),
+  /** Numeric representation of quality (normalized score, 0-1). */
+  score: z.number().min(0).describe('Numeric representation of quality'),
+});
+/**
+ * Type for evaluation result (inferred from GevalEvaluateResultSchema).
+ */
+export type GevalEvaluateResult = z.infer<typeof GevalEvaluateResultSchema>;
