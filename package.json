@@ -14,7 +14,8 @@
     "build": "tsc",
     "prepare": "pnpm run build",
     "example": "ts-node scripts/example.ts",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
