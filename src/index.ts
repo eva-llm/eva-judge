@@ -58,7 +58,9 @@ export const llmRubric = async (
     const userPrompt = Mustache.render(LLM_RUBRIC_USER_PROMPT, { output, rubric });
 
     const { output: result } = await generateText({
-     ...options, // NOTE: if option accidently includes 'system' or 'prompt', it will be overridden by correct values.
+      ...options, // NOTE: if option accidently includes 'system' or 'prompt', it will be overridden by correct values.
+      messages: undefined, // NOTE: ensure messages is not set, as we are using system and prompt.
+      tools: undefined, // NOTE: ensure tools is not set, as we are using a direct prompt.
       model: getModel(providerName, modelName),
       system: Mustache.render(LLM_RUBRIC_SYSTEM_PROMPT, { hash_id: getHashId() }),
       prompt: userPrompt,
@@ -113,6 +115,8 @@ const _gEval = async (
       const { output: stepsResult } = await generateText({
         ...options, // NOTE: if option accidently includes 'system' or 'prompt', it will be overridden by correct values.
         system: undefined, // NOTE: no system prompt for steps generation, just the criteria in the user prompt.
+        messages: undefined, // NOTE: ensure messages is not set, as we are using system and prompt.
+        tools: undefined, // NOTE: ensure tools is not set, as we are using a direct prompt.
         model,
         prompt: stepsPrompt,
         output: Output.object({
@@ -137,6 +141,8 @@ const _gEval = async (
 
     const { output: evalResult } = await generateText({
       ...options, // NOTE: if option accidently includes 'system' or 'prompt', it will be overridden by correct values.
+      messages: undefined, // NOTE: ensure messages is not set, as we are using system and prompt.
+      tools: undefined, // NOTE: ensure tools is not set, as we are using a direct prompt.
       model,
       system: Mustache.render(GEVAL_SYSTEM_PROMPT, { hash_id: getHashId() }),
       prompt: evaluationPrompt,
