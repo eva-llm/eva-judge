@@ -5,7 +5,7 @@
     "target": "ESNext",
     "outDir": "./dst",
     "baseUrl": "./src",
-    "types": [ "node" ],
+    "types": [ "node", "jest" ],
     "strict": true,
     "declaration": true,
     "sourceMap": true,

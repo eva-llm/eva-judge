@@ -1,7 +1,11 @@
 import crypto from 'node:crypto';
-import { generateText, Output } from 'ai';
 import * as Mustache from 'mustache';
+import {
+  generateText,
+  Output,
+} from 'ai';
 
+import CONF from './config';
 import {
   GEVAL_EVALUATE_PROMPT,
   GEVAL_EVALUATE_REPLY_PROMPT,
@@ -10,8 +14,11 @@ import {
   LLM_RUBRIC_SYSTEM_PROMPT,
   LLM_RUBRIC_USER_PROMPT,
 } from './prompt';
-import { getModel, getSteps, setSteps } from './registry';
-import CONF from './config';
+import {
+  getModel,
+  getSteps,
+  setSteps,
+} from './registry';
 import {
   type EvalOptions,
   type EvalMethod,
