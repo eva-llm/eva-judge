@@ -20,11 +20,11 @@ import {
   setSteps,
 } from './registry';
 import {
-  type EvalOptions,
-  type EvalMethod,
-  type GEvalInput,
-  type RubricResult,
-  type GevalEvaluateResult,
+  type TVercelOptions,
+  type TJudgeMethod,
+  type TGevalInput,
+  type TRubricResult,
+  type TGevalEvaluateResult,
   RubricResultSchema,
   GevalStepsResultSchema,
   GevalEvaluateResultSchema,
@@ -51,21 +51,21 @@ export const llmRubric = async (
   rubric: string,
   providerName: string,
   modelName: string,
-  options: EvalOptions = {}
-): Promise<RubricResult> => {
+  options: TVercelOptions = {}
+): Promise<TRubricResult> => {
   const start = Date.now();
   try {
     const userPrompt = Mustache.render(LLM_RUBRIC_USER_PROMPT, { output, rubric });
 
     const { output: result } = await generateText({
+     ...options, // NOTE: if option accidently includes 'system' or 'prompt', it will be overridden by correct values.
       model: getModel(providerName, modelName),
       system: Mustache.render(LLM_RUBRIC_SYSTEM_PROMPT, { hash_id: getHashId() }),
       prompt: userPrompt,
       output: Output.object({
         schema: RubricResultSchema,
       }),
-      ...options,
-    });
+   });
 
     CONF.hooks.onSuccess?.({
       method: 'llmRubric',
@@ -88,14 +88,14 @@ export const llmRubric = async (
 }
 
 const _gEval = async (
-  input: GEvalInput,
+  input: TGevalInput,
   criteria: string,
   providerName: string,
   modelName: string,
   maxScore: number,
-  methodName: EvalMethod,
-  options: EvalOptions = {}
-): Promise<GevalEvaluateResult> => {
+  methodName: TJudgeMethod,
+  options: TVercelOptions = {}
+): Promise<TGevalEvaluateResult> => {
   if (typeof input === 'string') {
     input = { query: '', answer: input };
   }
@@ -111,12 +111,13 @@ const _gEval = async (
       const stepsPrompt = Mustache.render(GEVAL_STEPS_PROMPT, { criteria });
 
       const { output: stepsResult } = await generateText({
+        ...options, // NOTE: if option accidently includes 'system' or 'prompt', it will be overridden by correct values.
+        system: undefined, // NOTE: no system prompt for steps generation, just the criteria in the user prompt.
         model,
         prompt: stepsPrompt,
         output: Output.object({
           schema: GevalStepsResultSchema,
         }),
-        ...options,
       });
 
       steps = stepsResult.steps;
@@ -135,6 +136,7 @@ const _gEval = async (
       });
 
     const { output: evalResult } = await generateText({
+      ...options, // NOTE: if option accidently includes 'system' or 'prompt', it will be overridden by correct values.
       model,
       system: Mustache.render(GEVAL_SYSTEM_PROMPT, { hash_id: getHashId() }),
       prompt: evaluationPrompt,
@@ -180,12 +182,12 @@ const _gEval = async (
  * @returns The evaluation result with normalized score (reason, score).
  */
 export const gEval = async (
-  input: GEvalInput,
+  input: TGevalInput,
   criteria: string,
   providerName: string,
   modelName: string,
-  options: EvalOptions = {}
-): Promise<GevalEvaluateResult> => _gEval(
+  options: TVercelOptions = {}
+): Promise<TGevalEvaluateResult> => _gEval(
   input,
   criteria,
   providerName,
@@ -206,12 +208,12 @@ export const gEval = async (
  * @returns The evaluation result with normalized score (reason, score).
  */
 export const bEval = async (
-  input: GEvalInput,
+  input: TGevalInput,
   criteria: string,
   providerName: string,
   modelName: string,
-  options: EvalOptions = {}
-): Promise<GevalEvaluateResult> => _gEval(
+  options: TVercelOptions = {}
+): Promise<TGevalEvaluateResult> => _gEval(
   input,
   criteria,
   providerName,

@@ -1,12 +1,12 @@
 import CONF from '../src/config';
-import type { IStepsCache, EvaHooks } from '../src/types';
+import type { IStepsCache, IJudgeHooks } from '../src/types';
 
 describe('Config module', () => {
   beforeEach(() => {
     // Reset to defaults before each test
     CONF.isModelCached = true;
     CONF.isStepsCached = true;
-    CONF.hooks = {} as EvaHooks;
+    CONF.hooks = {} as IJudgeHooks;
     CONF.restartModelCache();
     CONF.restartStepsCache();
   });
@@ -140,7 +140,7 @@ describe('Config module', () => {
 
   describe('setHooks', () => {
     it('sets hooks object', () => {
-      const hooks: EvaHooks = {
+      const hooks: IJudgeHooks = {
         onSuccess: jest.fn(),
         onError: jest.fn(),
       };
@@ -149,7 +149,7 @@ describe('Config module', () => {
     });
 
     it('allows partial hooks', () => {
-      const hooks: EvaHooks = { onSuccess: jest.fn() };
+      const hooks: IJudgeHooks = { onSuccess: jest.fn() };
       CONF.setHooks(hooks);
       expect(CONF.hooks.onSuccess).toBeDefined();
       expect(CONF.hooks.onError).toBeUndefined();
