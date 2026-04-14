@@ -1,7 +1,10 @@
 import { LRUCache } from 'lru-cache';
 import { type LanguageModel } from 'ai';
 
-import { type EvaHooks, type IStepsCache } from './types';
+import {
+  type IJudgeHooks,
+  type IStepsCache,
+} from './types';
 
 /**
  * In-memory implementation of IStepsCache using an LRU (Least Recently Used) cache.
@@ -109,12 +112,12 @@ export default {
   /**
    * Hooks for evaluation events (success/error notifications).
    */
-  hooks: {} as EvaHooks,
+  hooks: {} as IJudgeHooks,
   /**
    * Set the hooks for evaluation events.
    * @param hooks The hooks object implementing EvaHooks.
    */
-  setHooks(hooks: EvaHooks) {
+  setHooks(hooks: IJudgeHooks) {
     this.hooks = hooks;
   }
 };

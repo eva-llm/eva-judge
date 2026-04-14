@@ -44,6 +44,11 @@ await bEval({ query, answer }, 'answer is coherent to question', 'openai', 'gpt-
 ---
 
 ## API
+
+Judge `options` forward any Vercel AI SDK [generateText options](https://ai-sdk.dev/docs/reference/ai-sdk-core/generate-text#api-signature).
+
+> NOTE! Internal values such as `model`, `system`, and `prompt` are managed by the Judge and will override corresponding values in the `options` object to ensure evaluation integrity.
+
 ### llmRubric
 
 Evaluates an output against a rubric using an LLM. Returns a reason, pass/fail, and normalized score.
@@ -54,7 +59,7 @@ const result = await llmRubric(
   rubric,      // string: the rubric to use
   provider,    // string: LLM provider name
   model,       // string: LLM model name
-  options      // optional: { temperature, providerOptions }
+  options      // optional: { Vercel ai-sdk options }
 );
 // result: { reason: string, pass: boolean, score: number }
 ```
@@ -69,7 +74,7 @@ const result = await gEval(
   criteria,    // string: evaluation criteria
   provider,    // string: LLM provider name
   model,       // string: LLM model name
-  options      // optional: { temperature, providerOptions }
+  options      // optional: { Vercel ai-sdk options }
 );
 // result: { reason: string, score: number }
 ```
@@ -84,7 +89,7 @@ const result = await bEval(
   criteria,    // string: evaluation criteria
   provider,    // string: LLM provider name
   model,       // string: LLM model name
-  options      // optional: { temperature, providerOptions }
+  options      // optional: { Vercel ai-sdk options }
 );
 // result: { reason: string, score: number } // score will be 0 or 1
 ```

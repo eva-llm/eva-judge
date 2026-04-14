@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export type EvalMethod = 'bEval' | 'gEval' | 'llmRubric';
-export type GEvalInput = string | { query: string; answer: string };
+export type TJudgeMethod = 'bEval' | 'gEval' | 'llmRubric';
+export type TGevalInput = string | { query: string; answer: string };
 
 /**
  * Interface for a cache that stores evaluation steps.
@@ -24,32 +24,20 @@ export interface IStepsCache {
   get(key: string): Promise<string[] | undefined>;
 }
 
-/**
- * Options for evaluation functions.
- * Allows customization of LLM generation parameters and provider-specific options.
- */
-export interface EvalOptions {
-  /**
-   * Temperature for model generation (controls randomness).
-   */
-  temperature?: number;
-  /**
-   * Additional provider-specific options (passed to the LLM provider).
-   */
-  providerOptions?: Record<string, any>;
-}
+// NOTE: Just forward any Vercel ai-sdk options and mention it in the docs.
+export type TVercelOptions = Record<string, any>;
 
 /**
  * Optional hooks for receiving notifications about evaluation events.
  * Can be used to monitor or log success and error events for evaluation functions.
  */
-export interface EvaHooks {
+export interface IJudgeHooks {
   /**
    * Called when an evaluation completes successfully.
    * @param data Information about the evaluation, including method, params, result, and duration (ms).
    */
   onSuccess?: (data: {
-    method: EvalMethod;
+    method: TJudgeMethod;
     params: any;
     result: any;
     duration: number;
@@ -59,7 +47,7 @@ export interface EvaHooks {
    * @param data Information about the error, including method, error object, and duration (ms).
    */
   onError?: (data: {
-    method: EvalMethod;
+    method: TJudgeMethod;
     error: any;
     duration: number;
   }) => void;
@@ -80,7 +68,7 @@ export const RubricResultSchema = z.object({
 /**
  * Type for rubric result (inferred from RubricResultSchema).
  */
-export type RubricResult = z.infer<typeof RubricResultSchema>;
+export type TRubricResult = z.infer<typeof RubricResultSchema>;
 
 /**
  * Zod schema for evaluation steps result.
@@ -93,7 +81,7 @@ export const GevalStepsResultSchema = z.object({
 /**
  * Type for evaluation steps result (inferred from GevalStepsResultSchema).
  */
-export type GevalStepsResult = z.infer<typeof GevalStepsResultSchema>;
+export type TGevalStepsResult = z.infer<typeof GevalStepsResultSchema>;
 
 /**
  * Zod schema for evaluation result.
@@ -108,4 +96,4 @@ export const GevalEvaluateResultSchema = z.object({
 /**
  * Type for evaluation result (inferred from GevalEvaluateResultSchema).
  */
-export type GevalEvaluateResult = z.infer<typeof GevalEvaluateResultSchema>;
+export type TGevalEvaluateResult = z.infer<typeof GevalEvaluateResultSchema>;
