@@ -12,8 +12,10 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepare": "pnpm run build",
+    "prepare": "husky",
     "example": "ts-node scripts/example.ts",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
@@ -28,13 +30,17 @@
   },
   "homepage": "https://eva-llm.github.io/eva-judge",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/jest": "^30.0.0",
     "@types/mustache": "^4.2.6",
     "@types/node": "^25.5.0",
+    "eslint": "^10.2.1",
+    "husky": "^9.1.7",
     "jest": "^30.3.0",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.59.1"
   },
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "^4.0.82",

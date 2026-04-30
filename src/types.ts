@@ -25,6 +25,7 @@ export interface IStepsCache {
 }
 
 // NOTE: Just forward any Vercel ai-sdk options and mention it in the docs.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TVercelOptions = Record<string, any>;
 
 /**
@@ -38,7 +39,9 @@ export interface IJudgeHooks {
    */
   onSuccess?: (data: {
     method: TJudgeMethod;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result: any;
     duration: number;
   }) => void;
@@ -48,6 +51,7 @@ export interface IJudgeHooks {
    */
   onError?: (data: {
     method: TJudgeMethod;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     error: any;
     duration: number;
   }) => void;
