@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import * as Mustache from 'mustache';
+import Mustache from 'mustache';
 import {
   generateText,
   Output,
