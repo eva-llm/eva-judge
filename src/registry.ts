@@ -33,7 +33,7 @@ import {
   xai,
 } from '@ai-sdk/xai';
 
-import CONF from './config';
+import CONF from './config.js';
 
 /**
  * Map of provider names to provider functions.

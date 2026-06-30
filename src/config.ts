@@ -8,7 +8,7 @@ import {
 import {
   type IJudgeHooks,
   type IStepsCache,
-} from './types';
+} from './types.js';
 
 /**
  * In-memory implementation of IStepsCache using an LRU (Least Recently Used) cache.
