@@ -5,7 +5,7 @@ import {
   Output,
 } from 'ai';
 
-import CONF from './config';
+import CONF from './config.js';
 import {
   GEVAL_EVALUATE_PROMPT,
   GEVAL_EVALUATE_REPLY_PROMPT,
@@ -13,12 +13,12 @@ import {
   GEVAL_SYSTEM_PROMPT,
   LLM_RUBRIC_SYSTEM_PROMPT,
   LLM_RUBRIC_USER_PROMPT,
-} from './prompt';
+} from './prompt.js';
 import {
   getModel,
   getSteps,
   setSteps,
-} from './registry';
+} from './registry.js';
 import {
   type TVercelOptions,
   type TJudgeMethod,
@@ -28,11 +28,11 @@ import {
   RubricResultSchema,
   GevalStepsResultSchema,
   GevalEvaluateResultSchema,
-} from './types';
+} from './types.js';
 
-export * from './config';
-export { default } from './config';
-export * from './types';
+export * from './config.js';
+export { default } from './config.js';
+export * from './types.js';
 
 const getHashId = () => crypto.randomBytes(16).toString('hex'); // NOTE: 16 bytes = 128 bits of entropy, should be sufficient for uniqueness in prompts
 
